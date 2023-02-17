@@ -20,12 +20,12 @@ cnn, train_loader, test_loader = train_cnn(quickie=opt.quickie, dsName = opt.dsN
 
 
 if opt.w > 0:
-	embedOptions = [3,"oneHot", 10]
+	embedOptions = [3,"oneHot", 10][::-1]
 else:
 	embedOptions = [None]
 
 while True:
-	for class_emb_dim in embedOptions[::(-1)**(opt.version%2)]:
+	for class_emb_dim in embedOptions:
 		for schedType in ["sigmoid","linear","quad"]:
 			diffModel, schedule = train_diff(cnn, test_loader, train_loader=train_loader, schedType=schedType,quickie=opt.quickie,dsName=opt.dsName,
 								   version=opt.version,epochs= (opt.numEpochs if not opt.quickie else 3),class_emb_dim=class_emb_dim, w=opt.w)
