@@ -13,7 +13,7 @@ opt = parser.parse_args()
 
 prepare_folders(opt.reset);
 
-cnn, test_loader = train_mnist_cnn(quickie=quickie)
+cnn, test_loader = train_mnist_cnn(quickie=opt.quickie)
 train_data = get_train_data(opt.quickie);
 
 res = []
