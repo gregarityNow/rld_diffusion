@@ -48,7 +48,7 @@ get_ipython().kernel.do_shutdown(True)
 
 # Import the necessary modules
 import easypip
-from typing import Optional
+
 from functools import partial
 import math
 

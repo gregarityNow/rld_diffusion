@@ -50,6 +50,7 @@ def get_train_data(quickie):
     return train_data
 
 
+from typing import Optional
 import os
 import pickle
 def dumpRes(res):
