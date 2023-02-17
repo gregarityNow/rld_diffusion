@@ -186,6 +186,8 @@ class Unet(nn.Module):
         # determine dimensions
         self.channels = channels
         self.time_dim = time_dim
+        
+        print("doin class_emb_dim",class_emb_dim,class_emb_dim is None);
         if class_emb_dim == "oneHot":
             self.class_emb_dim = class_emb_dim
             self.class_embedder = nn.Identity()
