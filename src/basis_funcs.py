@@ -63,10 +63,13 @@ def dumpRes(res):
     if os.path.exists(resPath):
         with open(resPath,"rb") as fp:
             oldRes = pickle.load(fp)
-        res = list(set(res + oldRes));
+        for old in oldRes:
+            if not old in res:
+                res.append(old)
     with open(resPath,"wb") as fp:
         pickle.dump(res, fp);
     print("dumped to",outPath);
+    return res
 
 
 def prepare_folders(reset):
