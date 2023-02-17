@@ -21,10 +21,10 @@ class CNN(nn.Module):
 			self.zusatzNet = nn.Identity();
 		else:
 			self.zusatzNet = nn.Sequential(
-				nn.Conv2d(16, 8, (5, 5), stride=1, padding=2),
+				nn.Conv2d(16, 12, (3, 3), stride=1, padding=2),
 				nn.ReLU(),
 				nn.MaxPool2d((2, 2)),
-				nn.Conv2d(8, 4, (5, 5), stride=1, padding=2),
+				nn.Conv2d(12, 8, (3, 3), stride=1, padding=2),
 				nn.ReLU(),
 				nn.MaxPool2d((2, 2)),
 			)
