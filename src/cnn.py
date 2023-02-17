@@ -76,10 +76,8 @@ def train_mnist_cnn(epochs = 5, quickie = False):
 	mnist_test = torchvision.datasets.MNIST(train=False, transform=transform,download=True,root=dataLoc)
 
 	if quickie:
-		mnist_train = torch.utils.data.DataLoader(torch.utils.data.Subset(mnist_train,torch.arange(100)), batch_size=4,
-													shuffle=True, num_workers=2)
-		mnist_test = torch.utils.data.DataLoader(torch.utils.data.Subset(mnist_test, torch.arange(100)), batch_size=4,
-												  shuffle=True, num_workers=2)
+		mnist_train = torch.utils.data.Subset(mnist_train,torch.arange(100))
+		mnist_test = torch.utils.data.Subset(mnist_test, torch.arange(100))
 
 	source_train_loader = DataLoader(mnist_train, batch_size=batch_size)
 	source_test_loader = DataLoader(mnist_test, batch_size=batch_size)
