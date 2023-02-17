@@ -142,7 +142,7 @@ class Model(nn.Module):
 def p_sample(schedule: Schedule, model: Model, x: torch.Tensor, t, t_index: torch.LongTensor, labels, w=0):
 
     postVa = schedule.posterior_variance
-    batch_size = x.shape[0]
+    input_size = x.shape
 
     cumu_prod = torch.cumprod(schedule.alphas, axis=0)
 
@@ -159,7 +159,7 @@ def p_sample(schedule: Schedule, model: Model, x: torch.Tensor, t, t_index: torc
 
     sigma_t = torch.sqrt(temporal_gather(postVa, t, x.shape).to(device))
 
-    z = torch.zeros_like(x) if t_index == 0 else torch.normal(mean=0, std=1, size=batch_size)
+    z = torch.zeros_like(x) if t_index == 0 else torch.normal(mean=0, std=1, size=input_size)
     frac = (1 - alpht_time_T) / (torch.sqrt(1 - alpht_time_T_bar))
 
     prevX = (1/torch.sqrt(alpht_time_T)) * (x - frac * modOut) + sigma_t * z.to(device)
