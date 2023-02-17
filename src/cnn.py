@@ -44,8 +44,8 @@ from torchvision import transforms
 import torchvision
 from torch.nn import functional as F
 
+@torch.no_grad()
 def eval_model(net, loader):
-	net.eval()
 
 	acc, loss = 0, 0.
 	c = 0
@@ -118,7 +118,7 @@ def train_cnn(epochs = 5, quickie = False, dsName = "MNIST"):
 
 	for epoch in range(epochs):
 		train_loss = 0.
-
+		cnn.train()
 		for x, y in source_train_loader:
 			x, y = x.cuda(), y.cuda()
 
@@ -135,7 +135,8 @@ def train_cnn(epochs = 5, quickie = False, dsName = "MNIST"):
 		print(f"\tLearning rate = {optimizer.param_groups[0]['lr']}")
 
 		test_acc, test_loss = eval_model(cnn, source_test_loader)
-		print(f"Test loss: {test_loss}, test acc: {test_acc}")
+		train_acc, _ = eval_model(cnn, source_train_loader)
+		print(f"Test loss: {test_loss}, test acc: {test_acc},train acc: {train_acc}")
 
 	return cnn, source_train_loader, source_test_loader
 
