@@ -49,7 +49,7 @@ get_ipython().kernel.do_shutdown(True)
 # Import the necessary modules
 import easypip
 
-from functools import partial
+
 import math
 
 from tqdm.autonotebook import tqdm

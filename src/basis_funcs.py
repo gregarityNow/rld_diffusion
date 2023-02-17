@@ -51,6 +51,7 @@ def get_train_data(quickie):
 
 
 from typing import Optional
+from functools import partial
 import os
 import pickle
 def dumpRes(res):
