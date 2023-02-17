@@ -28,7 +28,7 @@ class CNN(nn.Module):
 				nn.ReLU(),
 				nn.MaxPool2d((2, 2)),
 			)
-		outChans = (144 if channels == 1 else 256)
+		outChans = (144 if channels == 1 else 32)
 		self.classif = nn.Linear(outChans, 10)
 
 	def forward(self, x):
