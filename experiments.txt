@@ -1,13 +1,27 @@
 12: w0 v0
+    w0.3 v1
 13: dead
+    w0.3 v0
 14: w0 v1
+    w0 v2
 15: w0.1 v0
-16: w0.1 v1
-17: w0.5 v0
+    w0.7 v0
+16: w0.1 v1 (vorbehalten! - 23, version 2)
+    w0.7 v1
+17: w0.5 v0 (vorbehalten! - 24, version 2)
+    w3 v0
 18: w0.5 v1
+    w3 v1
 19: w1 v0
-20: w1 v1
+    w4 v0
+20: w1 v1 (vorbehalten!)
+    dead
 21: dead
-22: w2 v0
+    dead
+22: w2 v0 (vorbehalten)
+    w4 v1
 23: w2 v1
+
 24: dead
+
+w0 v2

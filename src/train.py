@@ -61,9 +61,11 @@ def train_diff(cnn, test_loader, train_data, schedType = "sigmoid",model=None,ve
 
 			if step % 100 == 0:
 				print("epoch",epoch,"step",step,"Loss:", loss.item())
-
-			loss.backward()
-			optimizer.step()
+			if loss.item() == loss.item():
+				loss.backward()
+				optimizer.step()
+			else:
+				print("skipping this update, we have a nan loss..")
 
 		if epoch % 10 == 0:
 			do_evaluate(model, cnn, schedule, test_loader, w, quickie, epoch = epoch,
