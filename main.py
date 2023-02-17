@@ -18,7 +18,7 @@ train_data = get_train_data(opt.quickie);
 
 res = []
 
-for class_emb_dim in [None, 3,10]:
+for class_emb_dim in [3,10,None]:
 	for schedType in ["sigmoid","linear","quad"]:
 		diffModel, schedule = train_diff(train_data=train_data, schedType=schedType,
 							   class_emb_dim=class_emb_dim, w=opt.w)
