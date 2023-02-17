@@ -5,11 +5,11 @@ from .viz import show_images
 from .eval import do_evaluate
 
 
-def save_images(schedule, epoch, class_emb_dim, w, model, timesteps):
+def save_images(schedule, epoch, class_emb_dim, w, model, timesteps,version):
 	showLabels = torch.arange(10)
 	image = sample(schedule, model, batch_size=10, labels=showLabels, w=w)
 
-	suffix = getSuffix(class_emb_dim, w, epoch=epoch)
+	suffix = getSuffix(class_emb_dim, w, epoch=epoch,version=version)
 	show_images(
 		torch.cat(
 			[
@@ -22,7 +22,8 @@ def save_images(schedule, epoch, class_emb_dim, w, model, timesteps):
 	)
 
 from torch.utils.data import DataLoader
-def train_diff(cnn, test_loader, train_data, schedType = "sigmoid",model=None, class_emb_dim=None, w=0, epochs=30, timesteps = 200, quickie = 0):
+def train_diff(cnn, test_loader, train_data, schedType = "sigmoid",model=None,version = 0,
+			   class_emb_dim=None, w=0, epochs=30, timesteps = 200, quickie = 0):
 	if schedType == "sigmoid":
 		schedule = SigmoidSchedule(timesteps)
 	elif schedType == "linear":
@@ -69,10 +70,10 @@ def train_diff(cnn, test_loader, train_data, schedType = "sigmoid",model=None, c
 
 		if epoch % 10 == 0:
 			do_evaluate(model, cnn, schedule, test_loader, w, quickie, epoch = epoch,
-						schedType = schedType, class_emb_dim = class_emb_dim);
+						version=version,schedType = schedType, class_emb_dim = class_emb_dim);
 
-	do_evaluate(model, cnn, schedule, test_loader, w, quickie, epoch=epochs,
+	do_evaluate(model, cnn, schedule, test_loader, w, quickie, epoch=epochs,version=version,
 				schedType=schedType, class_emb_dim=class_emb_dim);
-	save_images(schedule, epochs, class_emb_dim, w, model, timesteps)
+	save_images(schedule, epochs, class_emb_dim, w, model, timesteps,version=version)
 
 	return model, schedule

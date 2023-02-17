@@ -8,6 +8,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-quickie",type=int,default = 0);
 parser.add_argument("-w",type=float,default=1.0);
 parser.add_argument("-reset",type=int,default=0);
+parser.add_argument("-version",type=int,default=0);
 
 opt = parser.parse_args()
 
@@ -23,7 +24,7 @@ else:
 	embedOptions = [None]
 
 for class_emb_dim in embedOptions:
-	for schedType in ["sigmoid","linear","quad"]:
+	for schedType in ["sigmoid","linear","quad"][::(-1)**(opt.version%2)]:
 		diffModel, schedule = train_diff(cnn, test_loader, train_data=train_data, schedType=schedType,quickie=opt.quickie,
-							   epochs= (50 if not opt.quickie else 3),class_emb_dim=class_emb_dim, w=opt.w)
+							   version=opt.version,epochs= (50 if not opt.quickie else 3),class_emb_dim=class_emb_dim, w=opt.w)
 

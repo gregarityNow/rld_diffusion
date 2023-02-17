@@ -9,7 +9,7 @@ import pathlib
 dataLoc = "/tmp/f002nb9/"
 pathlib.Path(dataLoc).mkdir(parents=True,exist_ok=True);
 
-def getSuffix(class_emb_dim, w, epoch = -1):
+def getSuffix(class_emb_dim, w, epoch = -1,version=0):
     ret = ""
     if epoch > -1:
         ret += "epoch"+str(epoch) + "_"
@@ -20,7 +20,9 @@ def getSuffix(class_emb_dim, w, epoch = -1):
     else:
         ret += "classEmbNone_"
 
-    ret += "w"+str(w)
+    ret += "w"+str(w)+"_"
+
+    ret += "version"+str(version)
 
     return ret
 
