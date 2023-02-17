@@ -3,6 +3,23 @@ from .basis_funcs import *
 from .diff_backbone import *;
 from .viz import show_images
 
+
+def save_images(schedule, epoch, class_emb_dim, w, model, timesteps):
+	showLabels = torch.arange(10)
+	image = sample(schedule, model, batch_size=10, labels=showLabels, w=w)
+
+	suffix = getSuffix(class_emb_dim, w, epoch=epoch)
+	show_images(
+		torch.cat(
+			[
+				image[-timesteps // 2],
+				image[-timesteps // 3],
+				image[-timesteps // 4],
+				image[-1],
+			]
+		), labels=showLabels, nrow=10, suffix=suffix
+	)
+
 from torch.utils.data import DataLoader
 def train_diff(train_data, schedType = "sigmoid",model=None, class_emb_dim=None, w=0, epochs=30, timesteps = 200):
 	if schedType == "sigmoid":
@@ -43,22 +60,12 @@ def train_diff(train_data, schedType = "sigmoid",model=None, class_emb_dim=None,
 			if step % 100 == 0:
 				print("epoch",epoch,"step",step,"Loss:", loss.item())
 
-			if step % 1000 == 0:
-				showLabels = torch.arange(10)
-				image = sample(schedule, model, batch_size=10, labels=showLabels, w=w)
-
-				suffix = getSuffix(class_emb_dim, w, epoch =epoch, step = step)
-				show_images(
-					torch.cat(
-						[
-							image[-timesteps // 2],
-							image[-timesteps // 3],
-							image[-timesteps // 4],
-							image[-1],
-						]
-					), labels=showLabels, nrow=10, suffix=suffix
-				)
-
 			loss.backward()
 			optimizer.step()
+
+			if step == 0:
+				save_images(schedule, epoch, class_emb_dim, w, model, timesteps)
+
+	save_images(schedule, epochs, class_emb_dim, w, model, timesteps)
+
 	return model, schedule
