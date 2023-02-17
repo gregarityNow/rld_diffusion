@@ -194,7 +194,7 @@ class Unet(nn.Module):
         self.class_emb_dim = class_emb_dim
         if class_emb_dim == "oneHot":
             self.class_embedder = nn.Sequential(
-                nn.Identity(),Unsqueezer()
+                nn.Identity()#,Unsqueezer()
             )
             self.class_emb_dim = class_emb_dim = 1
         elif class_emb_dim is not None:
