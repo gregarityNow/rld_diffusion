@@ -6,10 +6,14 @@ from tqdm import tqdm
 
 import pathlib
 
+##flags to set!
 dataLoc = "/tmp/f002nb9/"
-pathlib.Path(dataLoc).mkdir(parents=True,exist_ok=True);
+baseOutPath = "/users/Etu2/21210942/Documents/rld/out/"
 
-def getSuffix(class_emb_dim, w, epoch = -1,version=0, dsName = "MNIST"):
+pathlib.Path(dataLoc).mkdir(parents=True,exist_ok=True);
+pathlib.Path(baseOutPath).mkdir(parents=True,exist_ok=True);
+
+def getSuffix(class_emb_dim, w, epoch = -1,version=0, dsName = "MNIST", schedType = "linear"):
     ret = dsName + "_"
     if epoch > -1:
         ret += "epoch"+str(epoch) + "_"
@@ -20,6 +24,7 @@ def getSuffix(class_emb_dim, w, epoch = -1,version=0, dsName = "MNIST"):
     else:
         ret += "classEmbNone_"
 
+    ret += schedType + "_"
     ret += "w"+str(w)+"_"
 
     ret += "version"+str(version)
@@ -29,7 +34,7 @@ def getSuffix(class_emb_dim, w, epoch = -1,version=0, dsName = "MNIST"):
     return ret
 
 def getOutPath(suffix = ""):
-    return "/users/Etu2/21210942/Documents/rld/out/" + suffix + "/"
+    return baseOutPath + suffix + "/"
 
 from torch.utils.data import Dataset
 class CustomDataset(Dataset):

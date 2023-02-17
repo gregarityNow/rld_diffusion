@@ -34,6 +34,13 @@ def get_w_scores(df, noCifar = True):
 
 	print(df.groupby("w")[["fid", "is_score"]].mean().round(2).reset_index().to_latex(index=False))
 
+ws = df.groupby("w")[["fid", "is_score"]].mean().sort_values("is_score")
+plt.plot(ws.is_score, ws.fid)
+plt.ylabel("IS")
+plt.xlabel("FID")
+plt.title("Mean FID vs IS for MNIST images after 50 epochs")
+
+
 
 def get_embed_scores(df, noCifar=True):
 	df = df[(df.epoch == 50)]
@@ -55,7 +62,7 @@ def get_epoch_scores(df, noCifar=True):
 	if noCifar:
 		df = df[df.dsName != "CIFAR10"]
 	df.class_emb_dim = df.class_emb_dim.fillna("No Guidance")
-	print(df.groupby("schedType")[["fid", "is_score"]].mean().round(2).reset_index().to_latex(index=False))
+	print(df.groupby("epoch")[["fid", "is_score","loss"]].mean().round(3).reset_index().to_latex(index=False))
 
 def get_mnist_vs_cifar_scores(df):
 	df = df[(df.epoch == 50)]

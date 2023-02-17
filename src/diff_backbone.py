@@ -140,34 +140,29 @@ class Model(nn.Module):
 
 @torch.no_grad()
 def p_sample(schedule: Schedule, model: Model, x: torch.Tensor, t, t_index: torch.LongTensor, labels, w=0):
-    # À compléter...
-    if t_index == 0:
-        z = torch.zeros_like(x)
-    else:
-        z = torch.normal(mean=0, std=1, size=x.shape)  # torch.zeros_like(x),std=torch.ones_like(x)
 
-    alphas = schedule.alphas
-    cumProd = torch.cumprod(alphas, axis=0)
+    postVa = schedule.posterior_variance
+    batch_size = x.shape[0]
 
-    alphaTBar = temporal_gather(cumProd, t, x.shape)
+    cumu_prod = torch.cumprod(schedule.alphas, axis=0)
 
-    # print("nice",alphas.device, t.device, x.device)
-    alphaT = temporal_gather(alphas, t, x.shape)
-    factor = 1 / torch.sqrt(alphaT)
-    frac = (1 - alphaT) / (torch.sqrt(1 - alphaTBar))
-    # print("x",x.shape,"t",t.shape)
+    alpht_time_T = temporal_gather(schedule.alphas, t, x.shape)
 
+    alpht_time_T_bar = temporal_gather(cumu_prod, t, x.shape)
+
+    agno_gen = model(x, t.to(device), None)
     if w > 0:
-        wLabels = model(x, t.to(device), labels)
-        woLabels = model(x, t.to(device), None)
-        modOut = (1 + w) * wLabels - w * woLabels
+        cond_gen = model(x, t.to(device), labels)
+        modOut = -w*agno_gen + (1+w)*cond_gen
     else:
-        modOut = model(x, t.to(device), None)
-    sigma_t = torch.sqrt(temporal_gather(schedule.posterior_variance, t, x.shape).to(device))
-    sum2 = sigma_t * z.to(device)
-    # print(sum2.device,factor.device, frac.device)
+        modOut = agno_gen
 
-    prevX = factor * (x - frac * modOut) + sum2
+    sigma_t = torch.sqrt(temporal_gather(postVa, t, x.shape).to(device))
+
+    z = torch.zeros_like(x) if t_index == 0 else torch.normal(mean=0, std=1, size=batch_size)
+    frac = (1 - alpht_time_T) / (torch.sqrt(1 - alpht_time_T_bar))
+
+    prevX = (1/torch.sqrt(alpht_time_T)) * (x - frac * modOut) + sigma_t * z.to(device)
 
     return prevX
 
@@ -190,25 +185,33 @@ def sample(schedule, model, labels=None, batch_size=16, w=1, justLast=False):
 
     if labels is not None:
         batch_size = labels.shape[0]
-    if w == 0:
-        labels = None;
-    elif labels is None:
-        labels = torch.randint(low=0, high=9, size=(batch_size,))
-    if not labels is None:
-        labels = labels.to(device)
-    prev_x = torch.normal(mean=0, std=1, size=(batch_size, channels, image_size, image_size)).to(device)
-    T = schedule.timesteps
-    imgs = []
-    for t_index in range(T):
-        t = T - t_index - 1
-        ts = torch.Tensor([t] * batch_size).to(torch.int64).to(device)
-        prev_x = p_sample(schedule, model, prev_x, ts, t, labels, w=w)
-        if not justLast or t_index == T - 1:
-            imgs.append(prev_x.cpu())
-    # Will contain $x_{T-1}, \ldots, x_0$
 
-    # À compléter...
-    # assert False, 'Code non implémenté'
+    if w == 0:
+        #no guidance
+        labels = None;
+
+    elif labels is None:
+        #with guidance, generate one per class
+        labels = torch.randint(low=0, high=9, size=(batch_size,))
+
+    if not labels is None:
+        #send to cuda
+        labels = labels.to(device)
+
+    #initialize running variable
+    initSize = (batch_size,channels,image_size, image_size)
+    runningX = torch.normal(mean=0, std=1, size=initSize).to(device)
+
+    bigT = schedule.timesteps
+    imgs = []
+    for tIndex in range(bigT):
+        rev_tIndex = bigT - 1 - tIndex
+        ts = torch.Tensor([rev_tIndex] * batch_size).to(torch.int64).to(device)
+        runningX = p_sample(schedule, model, runningX, ts, rev_tIndex, labels, w=w)
+
+        if not justLast or tIndex == bigT - 1:
+            imgs.append(runningX.cpu())
+
     return imgs
 
 

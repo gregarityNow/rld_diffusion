@@ -5,11 +5,11 @@ from .viz import show_images
 from .eval import do_evaluate
 
 
-def save_images(schedule, epoch, class_emb_dim, w, model, timesteps,version, dsName):
+def save_images(schedule, epoch, class_emb_dim, w, model, timesteps,version, dsName, schedType):
 	showLabels = torch.arange(10)
 	image = sample(schedule, model, batch_size=10, labels=showLabels, w=w)
 
-	suffix = getSuffix(class_emb_dim, w, epoch=epoch,version=version, dsName = dsName)
+	suffix = getSuffix(class_emb_dim, w, epoch=epoch,version=version, dsName = dsName, schedType=schedType)
 	show_images(
 		torch.cat(
 			[
@@ -80,10 +80,10 @@ def train_diff(cnn, test_loader, train_loader, schedType = "sigmoid",model=None,
 		if epoch % 10 == 0:
 			do_evaluate(model, cnn, schedule, test_loader, w, quickie, epoch = epoch,loss = mean(epochLoss),
 						version=version,schedType = schedType, class_emb_dim = class_emb_dim, dsName = dsName);
-			save_images(schedule, epoch, class_emb_dim, w, model, timesteps, version=version, dsName = dsName)
+			save_images(schedule, epoch, class_emb_dim, w, model, timesteps, version=version, dsName = dsName, schedType = schedType)
 
 	do_evaluate(model, cnn, schedule, test_loader, w, quickie, epoch=epochs,version=version,
 				loss = mean(epochLoss),schedType=schedType, class_emb_dim=class_emb_dim, dsName = dsName);
-	save_images(schedule, epochs, class_emb_dim, w, model, timesteps,version=version, dsName = dsName)
+	save_images(schedule, epochs, class_emb_dim, w, model, timesteps,version=version, dsName = dsName, schedType = schedType)
 
 	return model, schedule

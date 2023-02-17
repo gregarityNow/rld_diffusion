@@ -39,3 +39,18 @@ available:
 
 belegt:
 16, 17, 23?
+
+
+
+candidates:
+/Users/f002nb9/Documents/f002nb9/m2a/rld_adv/diff/out/img/imageGrid_epoch50_classEmboneHot_w4.0_version101.png
+/Users/f002nb9/Documents/f002nb9/m2a/rld_adv/diff/out/img/imageGrid_epoch50_classEmboneHot_w3.0_version1.png
+/Users/f002nb9/Documents/f002nb9/m2a/rld_adv/diff/out/img/imageGrid_epoch50_classEmboneHot_w0.5_version2.png
+/Users/f002nb9/Documents/f002nb9/m2a/rld_adv/diff/out/img/imageGrid_epoch50_classEmboneHot_w0.3_version1.png
+
+no guidance:
+/Users/f002nb9/Documents/f002nb9/m2a/rld_adv/diff/out/img/imageGrid_epoch40_classEmbNone_w0.0_version101.png
+
+No training:
+
+/Users/f002nb9/Documents/f002nb9/m2a/rld_adv/diff/out/img/imageGrid_MNIST_epoch0_classEmbNone_w0.0_version101.png
