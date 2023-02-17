@@ -16,7 +16,6 @@ prepare_folders(opt.reset);
 cnn, test_loader = train_mnist_cnn(quickie=opt.quickie)
 train_data = get_train_data(opt.quickie);
 
-res = []
 
 if opt.w > 0:
 	embedOptions = [3,"oneHot", 10]
@@ -25,10 +24,6 @@ else:
 
 for class_emb_dim in embedOptions:
 	for schedType in ["sigmoid","linear","quad"]:
-		diffModel, schedule = train_diff(train_data=train_data, schedType=schedType,
+		diffModel, schedule = train_diff(cnn, test_loader, train_data=train_data, schedType=schedType,quickie=opt.quickie,
 							   epochs= (50 if not opt.quickie else 3),class_emb_dim=class_emb_dim, w=opt.w)
 
-		fid_score, is_score = evaluate_diff_model(diffModel, cnn, test_loader, opt.w, schedule, numFakeIters=(50 if not opt.quickie else 2),batch_size=100)
-		d = {"w":opt.w,"class_emb_dim":class_emb_dim,"schedType":schedType,"fid":fid_score,"is_score":is_score}
-		res.append(d)
-		res = dumpRes(res);

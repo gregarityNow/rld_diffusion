@@ -57,20 +57,19 @@ from functools import partial
 import os
 import pickle
 import math
-def dumpRes(res):
+def dumpRes(d):
     outPath = getOutPath()
 
     resPath = outPath + "/" + "results.pickle"
     if os.path.exists(resPath):
         with open(resPath,"rb") as fp:
             oldRes = pickle.load(fp)
-        for old in oldRes:
-            if not old in res:
-                res.append(old)
+        oldRes.append(d)
+    else:
+        oldRes = [d]
     with open(resPath,"wb") as fp:
-        pickle.dump(res, fp);
+        pickle.dump(oldRes, fp);
     print("dumped to",outPath);
-    return res
 
 
 def prepare_folders(reset):

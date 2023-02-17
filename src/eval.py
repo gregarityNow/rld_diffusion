@@ -34,6 +34,14 @@ def calculate_FID(real_activations, fake_activations):
 	return fid.item()
 
 
+@torch.no_grad()
+def do_evaluate(diffModel, cnn,schedule, test_loader, w, quickie, epoch, class_emb_dim, schedType):
+	fid_score, is_score = evaluate_diff_model(diffModel, cnn, test_loader, w, schedule,
+											  numFakeIters=(50 if not quickie else 2), batch_size=100)
+
+	d = {"w": w, "class_emb_dim": class_emb_dim, "schedType": schedType, "fid": fid_score, "is_score": is_score,"epoch":epoch}
+	dumpRes(d);
+
 import torch.utils.data as data_utils
 
 from .diff_backbone import sample
