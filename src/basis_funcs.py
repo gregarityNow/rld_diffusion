@@ -21,6 +21,7 @@ def getSuffix(class_emb_dim, w, epoch = -1, step = -1):
         ret += "classEmb"+str(class_emb_dim) + "_"
     else:
         ret += "classEmbNone_"
+    return ret
 
 def getOutPath(suffix = ""):
     return "/users/Etu2/21210942/Documents/rld/out/" + suffix + "/"
