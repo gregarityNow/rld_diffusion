@@ -18,7 +18,6 @@ def train_diff(train_data, schedType = "sigmoid",model=None, class_emb_dim=None,
 		model = Model(train_data.image_shape[0], train_data.channels, class_emb_dim=class_emb_dim)
 		if class_emb_dim is None:
 			print(model);
-			exit()
 	model.to(device)
 
 	optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
