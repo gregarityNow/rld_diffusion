@@ -48,7 +48,7 @@ def evaluate_diff_model(model, cnn, test_loader, w, schedule, numFakeIters=10,ba
 		print("fakeSamp",len(fakeSample),fakeSample[0].shape);
 		fakes.extend(fakeSample)
 
-	fakes = torch.stack(fakes).squeeze(0)
+	fakes = torch.cat(fakes)#.squeeze(0)
 	print("shakes", fakes.shape)
 	fakes = data_utils.TensorDataset(fakes)
 	fakes_loader = data_utils.DataLoader(fakes, batch_size=batch_size, shuffle=True)
