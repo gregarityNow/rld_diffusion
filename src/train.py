@@ -24,6 +24,7 @@ def train_diff(train_data, schedType = "sigmoid",model=None, class_emb_dim=None,
 
 	for epoch in range(epochs):
 		for step, (batch, labels) in enumerate(dataloader):
+
 			optimizer.zero_grad()
 
 			batch_size = batch.shape[0]
@@ -40,7 +41,7 @@ def train_diff(train_data, schedType = "sigmoid",model=None, class_emb_dim=None,
 			loss = criterion(targetGaussian, noise)
 
 			if step % 100 == 0:
-				print("Loss:", loss.item())
+				print("epoch",epoch,"step",step,"Loss:", loss.item())
 
 			if step % 1000 == 0:
 				showLabels = torch.arange(10)

@@ -21,5 +21,7 @@ def show_images(images, suffix, nrow=10, labels=None):
 		plt.xticks(torch.arange(labels.shape[0]).numpy() * images.shape[3] * 1.08 + images.shape[3] / 2, labels=labels.numpy())
 
 	plt.imshow(grid)
-	plt.savefig(getOutPath("img") + "imageGrid_"+suffix+".png")
+	imgOut = getOutPath("img") + "imageGrid_"+suffix+".png"
+	plt.savefig(imgOut)
+	print("saved image to",imgOut)
 	plt.close()
