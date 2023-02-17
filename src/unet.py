@@ -152,6 +152,9 @@ class PreNorm(nn.Module):
         x = self.norm(x)
         return self.fn(x)
 
+class Unsqueezer(nn.Module):
+    def forward(self,x):
+        return x.unsqueeze(-1);
 
 class Unet(nn.Module):
     def __init__(
@@ -188,9 +191,12 @@ class Unet(nn.Module):
         self.time_dim = time_dim
         
         print("doin class_emb_dim",class_emb_dim,class_emb_dim is None);
+        self.class_emb_dim = class_emb_dim
         if class_emb_dim == "oneHot":
-            self.class_emb_dim = class_emb_dim
-            self.class_embedder = nn.Identity()
+            self.class_embedder = nn.Sequential(
+                nn.Identity(),Unsqueezer()
+            )
+            self.class_emb_dim = class_emb_dim = 1
         elif class_emb_dim is not None:
             self.class_embedder = nn.Sequential(
                 nn.Linear(1, int(class_emb_dim/2)),
