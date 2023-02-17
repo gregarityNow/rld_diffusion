@@ -17,10 +17,12 @@ class CNN(nn.Module):
 			nn.ReLU(),
 			nn.MaxPool2d((2 ,2)),
 		)
-		if channels == 1:
-			self.classif = nn.Linear(144, 10)
+		if channels == 3:
+			self.classif = nn.Sequential(
+				nn.Linear(256, 50), nn.ReLU(),nn.Linear(50,10)
+			)
 		else:
-			self.classif = nn.Linear(256, 10)
+			self.classif = nn.Linear(144, 10)
 	def forward(self, x):
 		# TODO
 		bsize = x.size(0)
