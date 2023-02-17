@@ -63,18 +63,21 @@ def train_cnn(epochs = 5, quickie = False, dsName = "MNIST"):
 		mean = pixels.mean().item()
 		std = pixels.std().item()
 		channels = 1
+		mean = torch.tensor([mean])
+		std = torch.tensor([std])
 	elif dsName == "CIFAR10":
 		pixels = torchvision.datasets.CIFAR10(train=True, download=True, root=dataLoc).data / 255
 		mean = pixels.mean(axis=(0, 1, 2))
 		std = pixels.std(axis=(0, 1, 2))
 		channels = 3
+		mean = torch.tensor(mean)
+		std = torch.tensor(std)
 	else:
 		raise Exception("Don't know ds",dsName)
 
 
 	print(f"Mean {mean} and Std {std}")
-	mean = torch.tensor([mean])
-	std = torch.tensor([std])
+
 
 	transform = transforms.Compose([
 		transforms.ToTensor(),
