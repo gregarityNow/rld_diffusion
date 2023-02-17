@@ -23,8 +23,8 @@ if opt.w > 0:
 else:
 	embedOptions = [None]
 
-for class_emb_dim in embedOptions:
-	for schedType in ["sigmoid","linear","quad"][::(-1)**(opt.version%2)]:
+for class_emb_dim in embedOptions[::(-1)**(opt.version%2)]:
+	for schedType in ["sigmoid","linear","quad"]:
 		diffModel, schedule = train_diff(cnn, test_loader, train_data=train_data, schedType=schedType,quickie=opt.quickie,
 							   version=opt.version,epochs= (50 if not opt.quickie else 3),class_emb_dim=class_emb_dim, w=opt.w)
 
