@@ -58,6 +58,6 @@ def get_epoch_scores(df, noCifar=True):
 	print(df.groupby("schedType")[["fid", "is_score"]].mean().round(2).reset_index().to_latex(index=False))
 
 def get_mnist_vs_cifar_scores(df):
-df = df[(df.epoch == 50)]
-df.dsName = df.dsName.fillna("MNIST")
-print(df.groupby("dsName")[["fid", "is_score"]].mean().round(2).reset_index().to_latex(index=False))
+	df = df[(df.epoch == 50)]
+	df.dsName = df.dsName.fillna("MNIST")
+	print(df.groupby("dsName")[["fid", "is_score"]].mean().round(2).reset_index().to_latex(index=False))
