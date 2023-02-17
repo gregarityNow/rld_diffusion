@@ -137,6 +137,8 @@ def train_cnn(epochs = 5, quickie = False, dsName = "MNIST"):
 		train_acc, _ = eval_model(cnn, source_train_loader)
 		print(f"Test loss: {test_loss}, test acc: {test_acc},train acc: {train_acc}")
 
+		torch.cuda.empty_cache()
+
 	return cnn, source_train_loader, source_test_loader
 
 # cnn, test_loader = train_mnist()
