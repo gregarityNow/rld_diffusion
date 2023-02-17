@@ -25,3 +25,39 @@ def show_images(images, suffix, nrow=10, labels=None):
 	plt.savefig(imgOut)
 	print("saved image to",imgOut)
 	plt.close()
+
+
+def get_w_scores(df, noCifar = True):
+	df = df[(df.epoch==50)]
+	if noCifar:
+		df = df[df.dsName != "CIFAR10"]
+
+	print(df.groupby("w")[["fid", "is_score"]].mean().round(2).reset_index().to_latex(index=False))
+
+
+def get_embed_scores(df, noCifar=True):
+	df = df[(df.epoch == 50)]
+	if noCifar:
+		df = df[df.dsName != "CIFAR10"]
+	df.class_emb_dim = df.class_emb_dim.fillna("No Guidance")
+	print(df.groupby("class_emb_dim")[["fid", "is_score"]].mean().round(2).reset_index().to_latex(index=False))
+
+def get_sched_scores(df, noCifar=True):
+	df = df[(df.epoch == 50)]
+	if noCifar:
+		df = df[df.dsName != "CIFAR10"]
+	df.class_emb_dim = df.class_emb_dim.fillna("No Guidance")
+	print(df.groupby("schedType")[["fid", "is_score"]].mean().round(2).reset_index().to_latex(index=False))
+
+
+
+def get_epoch_scores(df, noCifar=True):
+	if noCifar:
+		df = df[df.dsName != "CIFAR10"]
+	df.class_emb_dim = df.class_emb_dim.fillna("No Guidance")
+	print(df.groupby("schedType")[["fid", "is_score"]].mean().round(2).reset_index().to_latex(index=False))
+
+def get_mnist_vs_cifar_scores(df):
+df = df[(df.epoch == 50)]
+df.dsName = df.dsName.fillna("MNIST")
+print(df.groupby("dsName")[["fid", "is_score"]].mean().round(2).reset_index().to_latex(index=False))
