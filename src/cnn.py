@@ -16,17 +16,26 @@ class CNN(nn.Module):
 			nn.Conv2d(32, 16, (5 ,5), stride=1, padding=2),
 			nn.ReLU(),
 			nn.MaxPool2d((2 ,2)),
-		)
-		if channels == 3:
-			self.classif = nn.Sequential(
-				nn.Linear(256, 50), nn.ReLU(),nn.Linear(50,10)
 			)
+		if channels == 1:
+			self.zusatzNet = nn.Identity();
 		else:
-			self.classif = nn.Linear(144, 10)
+			self.zusatzNet = nn.Sequential(
+				nn.Conv2d(16, 8, (5, 5), stride=1, padding=2),
+				nn.ReLU(),
+				nn.MaxPool2d((2, 2)),
+				nn.Conv2d(8, 4, (5, 5), stride=1, padding=2),
+				nn.ReLU(),
+				nn.MaxPool2d((2, 2)),
+			)
+		outChans = (144 if channels == 1 else 256)
+		self.classif = nn.Linear(outChans, 10)
+
 	def forward(self, x):
 		# TODO
 		bsize = x.size(0)
 		emb = self.net(x)
+		emb = self.zusatzNet(emb);
 		embFlat = emb.view(bsize, -1)
 		out = self.classif(embFlat)
 		# print("nose",out.shape)
