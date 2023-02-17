@@ -45,7 +45,7 @@ from torch.nn import functional as F
 
 @torch.no_grad()
 def eval_model(net, loader):
-
+	net.eval()
 	acc, loss = 0, 0.
 	c = 0
 	for x, y in loader:

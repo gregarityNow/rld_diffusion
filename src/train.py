@@ -50,6 +50,7 @@ def train_diff(cnn, test_loader, train_loader, schedType = "sigmoid",model=None,
 
 	for epoch in range(epochs):
 		epochLoss = []
+		model.train()
 		for step, (batch, labels) in enumerate(train_loader):
 
 			optimizer.zero_grad()
