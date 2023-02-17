@@ -23,7 +23,7 @@ for class_emb_dim in [3,10,None]:
 		diffModel, schedule = train_diff(train_data=train_data, schedType=schedType,
 							   class_emb_dim=class_emb_dim, w=opt.w)
 
-		fid_score, is_score = evaluate_diff_model(diffModel, cnn, test_loader, opt.w, schedule, numFakeIters=50,batch_size=100)
+		fid_score, is_score = evaluate_diff_model(diffModel, cnn, test_loader, opt.w, schedule, numFakeIters=(50 if not opt.quickie else 2),batch_size=100)
 		d = {"w":opt.w,"class_emb_dim":class_emb_dim,"schedType":schedType,"fid":fid_score,"is_score":is_score}
 		res.append(d)
 		dumpRes(res);
