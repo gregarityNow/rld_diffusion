@@ -9,8 +9,8 @@ import pathlib
 dataLoc = "/tmp/f002nb9/"
 pathlib.Path(dataLoc).mkdir(parents=True,exist_ok=True);
 
-def getSuffix(class_emb_dim, w, epoch = -1,version=0):
-    ret = ""
+def getSuffix(class_emb_dim, w, epoch = -1,version=0, dsName = "MNIST"):
+    ret = dsName + "_"
     if epoch > -1:
         ret += "epoch"+str(epoch) + "_"
 
@@ -24,22 +24,22 @@ def getSuffix(class_emb_dim, w, epoch = -1,version=0):
 
     ret += "version"+str(version)
 
+
+
     return ret
 
 def getOutPath(suffix = ""):
     return "/users/Etu2/21210942/Documents/rld/out/" + suffix + "/"
 
 from torch.utils.data import Dataset
-class MnistDataset(Dataset):
+class CustomDataset(Dataset):
     def __init__(self, ds):
         self.images = torch.from_numpy(ds.images.data()).unsqueeze(1) / 255.0
         self.labels = ds.labels.data()
         self.channels = 1
         self.image_shape = self.images[0, 0].shape
-
     def __getitem__(self, index):
         return self.images[index], self.labels[index]
-
     def __len__(self):
         return len(self.images)
 

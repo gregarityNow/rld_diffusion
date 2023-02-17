@@ -4,10 +4,10 @@ from torch.utils.data import DataLoader
 from datamaestro import prepare_dataset
 
 class CNN(nn.Module):
-	def __init__(self):
+	def __init__(self,channels = 1):
 		super().__init__()
 		self.net = nn.Sequential(
-			nn.Conv2d(1, 64 ,(5 ,5), stride=1, padding=2),
+			nn.Conv2d(channels, 64 ,(5 ,5), stride=1, padding=2),
 			nn.ReLU(),
 			nn.MaxPool2d((2 ,2)),
 			nn.Conv2d(64, 32, (5 ,5), stride=1, padding=2),
@@ -56,12 +56,21 @@ def eval_model(net, loader):
 	return round(100 * acc / c, 2), round(loss / len(loader), 5)
 
 batch_size = 100
-def train_mnist_cnn(epochs = 5, quickie = False):
+def train_cnn(epochs = 5, quickie = False, dsName = "MNIST"):
 
+	if dsName == "MNIST":
+		pixels = torchvision.datasets.MNIST(train=True, download=True,root=dataLoc).data / 255
+		mean = pixels.mean().item()
+		std = pixels.std().item()
+		channels = 1
+	elif dsName == "CIFAR10":
+		pixels = torchvision.datasets.CIFAR10(train=True, download=True, root=dataLoc).data / 255
+		mean = pixels.mean(axis=(0, 1, 2))
+		std = pixels.std(axis=(0, 1, 2))
+		channels = 3
+	else:
+		raise Exception("Don't know ds",dsName)
 
-	mnist_pixels = torchvision.datasets.MNIST(train=True, download=True,root=dataLoc).data / 255
-	mean = mnist_pixels.mean().item()
-	std = mnist_pixels.std().item()
 
 	print(f"Mean {mean} and Std {std}")
 	mean = torch.tensor([mean])
@@ -72,18 +81,24 @@ def train_mnist_cnn(epochs = 5, quickie = False):
 		transforms.Normalize(mean, std)
 	])
 
-	mnist_train = torchvision.datasets.MNIST(train=True, transform=transform,download=True,root=dataLoc)
-	mnist_test = torchvision.datasets.MNIST(train=False, transform=transform,download=True,root=dataLoc)
+
+	if dsName == "MNIST":
+		train_data = torchvision.datasets.MNIST(train=True, transform=transform, download=True, root=dataLoc)
+		test_data = torchvision.datasets.MNIST(train=False, transform=transform, download=True, root=dataLoc)
+	elif dsName == "CIFAR10":
+		train_data = torchvision.datasets.CIFAR10(train=True, transform=transform, download=True, root=dataLoc)
+		test_data = torchvision.datasets.CIFAR10(train=False, transform=transform, download=True, root=dataLoc)
+	else:
+		raise Exception("Don't know ds",dsName)
 
 	if quickie:
-		mnist_train = torch.utils.data.Subset(mnist_train,torch.arange(100))
-		mnist_test = torch.utils.data.Subset(mnist_test, torch.arange(100))
+		train_data = torch.utils.data.Subset(train_data,torch.arange(100))
+		test_data = torch.utils.data.Subset(test_data, torch.arange(100))
 
-	source_train_loader = DataLoader(mnist_train, batch_size=batch_size)
-	source_test_loader = DataLoader(mnist_test, batch_size=batch_size)
+	source_train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
+	source_test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
 
-
-	cnn = CNN().to(device)
+	cnn = CNN(channels).to(device)
 
 	optimizer = torch.optim.SGD(cnn.parameters(), lr=1.0, momentum=0.9)
 
@@ -114,6 +129,6 @@ def train_mnist_cnn(epochs = 5, quickie = False):
 		test_acc, test_loss = eval_model(cnn, source_test_loader)
 		print(f"Test loss: {test_loss}, test acc: {test_acc}")
 
-	return cnn, source_test_loader
+	return cnn, source_train_loader, source_test_loader
 
 # cnn, test_loader = train_mnist()

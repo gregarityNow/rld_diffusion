@@ -5,11 +5,11 @@ from .viz import show_images
 from .eval import do_evaluate
 
 
-def save_images(schedule, epoch, class_emb_dim, w, model, timesteps,version):
+def save_images(schedule, epoch, class_emb_dim, w, model, timesteps,version, dsName):
 	showLabels = torch.arange(10)
 	image = sample(schedule, model, batch_size=10, labels=showLabels, w=w)
 
-	suffix = getSuffix(class_emb_dim, w, epoch=epoch,version=version)
+	suffix = getSuffix(class_emb_dim, w, epoch=epoch,version=version, dsName = dsName)
 	show_images(
 		torch.cat(
 			[
@@ -22,8 +22,8 @@ def save_images(schedule, epoch, class_emb_dim, w, model, timesteps,version):
 	)
 
 from torch.utils.data import DataLoader
-def train_diff(cnn, test_loader, train_data, schedType = "sigmoid",model=None,version = 0,
-			   class_emb_dim=None, w=0, epochs=30, timesteps = 200, quickie = 0):
+def train_diff(cnn, test_loader, train_loader, schedType = "sigmoid",model=None,version = 0,
+			   dsName = "MNIST",class_emb_dim=None, w=0, epochs=30, timesteps = 200, quickie = 0):
 	if schedType == "sigmoid":
 		schedule = SigmoidSchedule(timesteps)
 	elif schedType == "linear":
@@ -33,17 +33,25 @@ def train_diff(cnn, test_loader, train_data, schedType = "sigmoid",model=None,ve
 	else:
 		raise Exception("Don't know scheduler",schedType);
 
+	if dsName == "MNIST":
+		channels = 1
+		imageWidth = 28
+	elif dsName == "CIFAR10":
+		channels = 3
+		imageWidth = 32
+	else:
+		raise  Exception("Don't know ds",dsName);
+
 	if model is None:
-		model = Model(train_data.image_shape[0], train_data.channels, class_emb_dim=class_emb_dim)
+		model = Model(imageWidth, channels, class_emb_dim=class_emb_dim)
 	model.to(device)
 
 	optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
-	dataloader = DataLoader(train_data, batch_size=128, shuffle=True, pin_memory=True)
 	criterion = torch.nn.MSELoss()
 
 	for epoch in range(epochs):
 		epochLoss = []
-		for step, (batch, labels) in enumerate(dataloader):
+		for step, (batch, labels) in enumerate(train_loader):
 
 			optimizer.zero_grad()
 
@@ -72,10 +80,10 @@ def train_diff(cnn, test_loader, train_data, schedType = "sigmoid",model=None,ve
 		if epoch % 10 == 0:
 			do_evaluate(model, cnn, schedule, test_loader, w, quickie, epoch = epoch,loss = mean(epochLoss),
 						version=version,schedType = schedType, class_emb_dim = class_emb_dim);
-			save_images(schedule, epoch, class_emb_dim, w, model, timesteps, version=version)
+			save_images(schedule, epoch, class_emb_dim, w, model, timesteps, version=version, dsName = dsName)
 
 	do_evaluate(model, cnn, schedule, test_loader, w, quickie, epoch=epochs,version=version,
 				loss = mean(epochLoss),schedType=schedType, class_emb_dim=class_emb_dim);
-	save_images(schedule, epochs, class_emb_dim, w, model, timesteps,version=version)
+	save_images(schedule, epochs, class_emb_dim, w, model, timesteps,version=version, dsName = dsName)
 
 	return model, schedule
