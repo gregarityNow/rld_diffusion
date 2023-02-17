@@ -17,7 +17,7 @@ def getSuffix(class_emb_dim, w, epoch = -1, step = -1):
     if step > -1:
         ret += "step"+str(epoch) + "_"
 
-    if class_emb_dim is None:
+    if class_emb_dim is not None:
         ret += "classEmb"+str(class_emb_dim) + "_"
     else:
         ret += "classEmbNone_"
