@@ -34,11 +34,11 @@ def get_w_scores(df, noCifar = True):
 
 	print(df.groupby("w")[["fid", "is_score"]].mean().round(2).reset_index().to_latex(index=False))
 
-ws = df.groupby("w")[["fid", "is_score"]].mean().sort_values("is_score")
-plt.plot(ws.is_score, ws.fid)
-plt.ylabel("IS")
-plt.xlabel("FID")
-plt.title("Mean FID vs IS for MNIST images after 50 epochs")
+# ws = df.groupby("w")[["fid", "is_score"]].mean().sort_values("is_score")
+# plt.plot(ws.is_score, ws.fid)
+# plt.ylabel("IS")
+# plt.xlabel("FID")
+# plt.title("Mean FID vs IS for MNIST images after 50 epochs")
 
 
 
