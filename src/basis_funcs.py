@@ -60,8 +60,8 @@ def dumpRes(res):
         with open(resPath,"rb") as fp:
             oldRes = pickle.load(fp)
         res = list(set(res + oldRes));
-        with open(resPath,"wb") as fp:
-            pickle.dump(res, fp);
+    with open(resPath,"wb") as fp:
+        pickle.dump(res, fp);
     print("dumped to",outPath);
 
 
