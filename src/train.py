@@ -66,7 +66,7 @@ def train_diff(cnn, test_loader, train_data, schedType = "sigmoid",model=None,ve
 			optimizer.step()
 
 			if step == 0:
-				save_images(schedule, epoch, class_emb_dim, w, model, timesteps)
+				save_images(schedule, epoch, class_emb_dim, w, model, timesteps,version=version)
 
 		if epoch % 10 == 0:
 			do_evaluate(model, cnn, schedule, test_loader, w, quickie, epoch = epoch,
