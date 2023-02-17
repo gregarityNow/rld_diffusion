@@ -1,4 +1,4 @@
-
+from numpy import mean
 from .basis_funcs import *
 from .diff_backbone import *;
 from .viz import show_images
@@ -42,6 +42,7 @@ def train_diff(cnn, test_loader, train_data, schedType = "sigmoid",model=None,ve
 	criterion = torch.nn.MSELoss()
 
 	for epoch in range(epochs):
+		epochLoss = []
 		for step, (batch, labels) in enumerate(dataloader):
 
 			optimizer.zero_grad()
@@ -64,16 +65,17 @@ def train_diff(cnn, test_loader, train_data, schedType = "sigmoid",model=None,ve
 			if loss.item() == loss.item():
 				loss.backward()
 				optimizer.step()
+				epochLoss.append(loss.item())
 			else:
 				print("skipping this update, we have a nan loss..")
 
 		if epoch % 10 == 0:
-			do_evaluate(model, cnn, schedule, test_loader, w, quickie, epoch = epoch,
+			do_evaluate(model, cnn, schedule, test_loader, w, quickie, epoch = epoch,loss = mean(epochLoss),
 						version=version,schedType = schedType, class_emb_dim = class_emb_dim);
 			save_images(schedule, epoch, class_emb_dim, w, model, timesteps, version=version)
 
 	do_evaluate(model, cnn, schedule, test_loader, w, quickie, epoch=epochs,version=version,
-				schedType=schedType, class_emb_dim=class_emb_dim);
+				loss = mean(epochLoss),schedType=schedType, class_emb_dim=class_emb_dim);
 	save_images(schedule, epochs, class_emb_dim, w, model, timesteps,version=version)
 
 	return model, schedule
