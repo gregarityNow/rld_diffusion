@@ -43,15 +43,7 @@ class CustomDataset(Dataset):
     def __len__(self):
         return len(self.images)
 
-from datamaestro import prepare_dataset
-def get_train_data(quickie):
-    ds = prepare_dataset("com.lecun.mnist")
-    train_data = MnistDataset(ds.train)
-    if quickie:
-        train_data.images = train_data.images[:100]
-        train_data.labels = train_data.labels[:100]
 
-    return train_data
 
 
 from typing import Optional

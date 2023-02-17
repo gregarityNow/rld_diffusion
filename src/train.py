@@ -21,7 +21,6 @@ def save_images(schedule, epoch, class_emb_dim, w, model, timesteps,version, dsN
 		), labels=showLabels, nrow=10, suffix=suffix
 	)
 
-from torch.utils.data import DataLoader
 def train_diff(cnn, test_loader, train_loader, schedType = "sigmoid",model=None,version = 0,
 			   dsName = "MNIST",class_emb_dim=None, w=0, epochs=30, timesteps = 200, quickie = 0):
 	if schedType == "sigmoid":
@@ -79,11 +78,11 @@ def train_diff(cnn, test_loader, train_loader, schedType = "sigmoid",model=None,
 
 		if epoch % 10 == 0:
 			do_evaluate(model, cnn, schedule, test_loader, w, quickie, epoch = epoch,loss = mean(epochLoss),
-						version=version,schedType = schedType, class_emb_dim = class_emb_dim);
+						version=version,schedType = schedType, class_emb_dim = class_emb_dim, dsName = dsName);
 			save_images(schedule, epoch, class_emb_dim, w, model, timesteps, version=version, dsName = dsName)
 
 	do_evaluate(model, cnn, schedule, test_loader, w, quickie, epoch=epochs,version=version,
-				loss = mean(epochLoss),schedType=schedType, class_emb_dim=class_emb_dim);
+				loss = mean(epochLoss),schedType=schedType, class_emb_dim=class_emb_dim, dsName = dsName);
 	save_images(schedule, epochs, class_emb_dim, w, model, timesteps,version=version, dsName = dsName)
 
 	return model, schedule

@@ -1,7 +1,7 @@
 from .basis_funcs import *;
 
 from torch.utils.data import DataLoader
-from datamaestro import prepare_dataset
+
 
 class CNN(nn.Module):
 	def __init__(self,channels = 1):
