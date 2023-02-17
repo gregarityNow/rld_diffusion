@@ -42,8 +42,10 @@ def evaluate_diff_model(model, cnn, test_loader, w, schedule, numFakeIters=10,ba
 	fakes = []
 
 	showLabels = torch.arange(10).repeat(int(batch_size / 10))
+
 	for _ in tqdm(range(numFakeIters)):
 		fakeSample = sample(schedule, model, batch_size=batch_size, labels=showLabels, w=w, justLast=True)
+		print("fakeSamp",len(fakeSample),fakeSample[0].shape);
 		fakes.extend(fakeSample)
 
 	fakes = torch.stack(fakes).squeeze(0)
